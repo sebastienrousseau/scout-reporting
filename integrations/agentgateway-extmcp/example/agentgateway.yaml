@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2026 Sebastien Rousseau <sebastian.rousseau@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+#
+# agentgateway local configuration with two MCP backends gated by the
+# scout attestation processor. Target names here ("github", "everything")
+# are what the gateway sends in McpRequest.service_names, so they must
+# match the keys of config.json's "targets".
+#
+#   agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
+#   agentgateway -f example/agentgateway.yaml
+
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+mcp:
+  port: 3000
+  policies:
+    cors:
+      allowOrigins: ["*"]
+      allowHeaders: [mcp-protocol-version, content-type, mcp-session-id]
+    mcpGuardrails:
+      processors:
+        - kind: remote
+          host: 127.0.0.1:4400
+          # A processor that is down or answers badly denies the call.
+          # failOpen would let unattested backends through while the
+          # processor restarts, which defeats the point of gating.
+          failureMode: failClosed
+          # Gate tool calls and listing; the processor answers Pass for
+          # anything else it is asked, but not asking is cheaper.
+          methods:
+            tools/call: request
+            tools/list: request
+            resources/read: request
+            prompts/get: request
+  targets:
+    - name: github
+      mcp:
+        host: https://api.githubcopilot.com/mcp/
+    - name: everything
+      stdio:
+        cmd: npx
+        args: ["@modelcontextprotocol/server-everything"]

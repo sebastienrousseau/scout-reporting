@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: 2026 Sebastien Rousseau <sebastian.rousseau@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# A release of a Go module is a signed tag; the module proxy serves it. This
+# publishes the GitHub release page beside it, with the CHANGELOG section as
+# its notes, so the tag and the notes cannot disagree.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions: {}
+
+jobs:
+  release:
+    name: Publish release notes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: The tag, the changelog and the README agree
+        run: scripts/verify-release-versions.sh "${GITHUB_REF_NAME}"
+
+      - name: Notes from the changelog section
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          ver="${TAG#v}"
+          # shellcheck disable=SC2016 # awk's program is meant to be single-quoted
+          awk -v ver="$ver" '
+            $0 ~ "^## \\[" ver "\\]" { on = 1; next }
+            on && /^## \[/ { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          [ -s notes.md ] || { echo "no changelog section for $ver" >&2; exit 1; }
+          cat >> notes.md <<EOF
+
+          ---
+
+          Import the module at this version:
+
+          \`\`\`sh
+          go get github.com/sebastienrousseau/scout-reporting@${TAG}
+          \`\`\`
+          EOF
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" --title "scout-reporting $TAG" --notes-file notes.md --verify-tag
