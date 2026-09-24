@@ -22,6 +22,19 @@ module, this repository tags first.
   could still write a log line after the caller believed the process had
   stopped. The goroutine is now joined before `run` returns. The race
   detector found it in CI under the grpc 1.83 update's timing.
+- **The agentgateway example no longer gates `tools/list`.** One
+  listing spans every target, so a single unattested backend denied the
+  whole listing and the agent saw no tools, attested ones included.
+  Calls to an unattested backend are still denied. Found by running the
+  example end to end against agentgateway v1.5.0.
+
+### Changed
+
+- **The processor README says where `mcpGuardrails` goes.**
+  agentgateway rejects it on an individual target; it belongs under
+  `mcp.policies` or a route, and per-backend gating comes from
+  `service_names`. The README also notes that `denyFailIn: [protocol]`
+  denies a server that fails `protocol.origin`, whatever its score.
 
 ## [0.0.5] — 2026-09-24
 
