@@ -86,7 +86,12 @@ func run(ctx context.Context, args []string, stderr io.Writer, ready chan<- net.
 		ready <- lis.Addr()
 	}
 
-	go reloadOn(ctx, store, log, *interval, hup)
+	// The reloader is joined before run returns, so nothing it logs can land
+	// after the caller believes the process has stopped.
+	rctx, stopReload := context.WithCancel(ctx)
+	reloaded := make(chan struct{})
+	go func() { defer close(reloaded); reloadOn(rctx, store, log, *interval, hup) }()
+	defer func() { stopReload(); <-reloaded }()
 
 	errc := make(chan error, 1)
 	go func() { errc <- srv.Serve(lis) }()

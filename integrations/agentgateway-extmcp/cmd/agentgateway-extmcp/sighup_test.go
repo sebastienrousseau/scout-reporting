@@ -11,6 +11,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"sync"
 	"syscall"
 	"testing"
 	"time"
@@ -30,7 +31,7 @@ func TestSIGHUPReloads(t *testing.T) {
 	defer cancel()
 	ready := make(chan net.Addr, 1)
 	done := make(chan error, 1)
-	var stderr bytes.Buffer
+	var stderr lockedBuffer
 	go func() { done <- run(ctx, []string{"-config", cfg, "-listen", "127.0.0.1:0"}, &stderr, ready) }()
 	var addr net.Addr
 	select {
@@ -68,4 +69,23 @@ func TestSIGHUPReloads(t *testing.T) {
 	if !strings.Contains(stderr.String(), `"trigger":"SIGHUP"`) {
 		t.Errorf("stderr lacks the SIGHUP reload line:\n%s", stderr.String())
 	}
+}
+
+// lockedBuffer is a bytes.Buffer safe to read while run is still writing
+// to it from another goroutine.
+type lockedBuffer struct {
+	mu  sync.Mutex
+	buf bytes.Buffer
+}
+
+func (b *lockedBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.buf.Write(p)
+}
+
+func (b *lockedBuffer) String() string {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.buf.String()
 }

@@ -15,6 +15,14 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The agentgateway processor no longer logs after it has stopped.**
+  `run` returned without waiting for its reload goroutine, so a reload
+  could still write a log line after the caller believed the process had
+  stopped. The goroutine is now joined before `run` returns. The race
+  detector found it in CI under the grpc 1.83 update's timing.
+
 ## [0.0.5] — 2026-09-24
 
 In lockstep with scout 0.0.5. Nothing in the `attestation` package or the
