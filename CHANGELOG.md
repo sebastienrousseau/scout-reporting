@@ -17,11 +17,19 @@ module, this repository tags first.
 
 ## [0.0.5] — 2026-09-24
 
-In lockstep with scout 0.0.5. Nothing in the `attestation` package, the
-schema or the processor changed; what changed is how the repository
-checks itself.
+In lockstep with scout 0.0.5. Nothing in the `attestation` package or the
+schema changed; the processor gains one fix, and the rest is how the
+repository checks itself.
 
 ### Fixed
+
+- **A SIGHUP just after the agentgateway processor starts no longer
+  kills it.** The handler was installed by a goroutine after the process
+  announced it was listening, so a hangup in that window took the default
+  action; an operator reloading straight after a start stopped the gate.
+  The handler now goes in before anything is announced. CI found it, as a
+  test killed by its own signal under one shuffle order on a slower
+  runner.
 
 - **The coverage gate no longer dies on a package with no statements.**
   `spec` only embeds a file, so `go test` reports "[no statements]", the

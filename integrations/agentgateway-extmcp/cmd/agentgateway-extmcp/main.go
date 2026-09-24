@@ -63,6 +63,13 @@ func run(ctx context.Context, args []string, stderr io.Writer, ready chan<- net.
 	}
 	log := slog.New(slog.NewJSONHandler(stderr, &slog.HandlerOptions{Level: lvl}))
 
+	// SIGHUP's handler goes in before anything can announce the process:
+	// until signal.Notify runs, a hangup takes the default action and kills
+	// it, so an operator reloading just after start would stop the gate.
+	hup := make(chan os.Signal, 1)
+	signal.Notify(hup, syscall.SIGHUP)
+	defer signal.Stop(hup)
+
 	store := processor.NewStore(*configPath, &processor.Loader{MaxBytes: *maxBytes, Timeout: *timeout}, log)
 	if err := store.Reload(ctx); err != nil {
 		return err
@@ -79,7 +86,7 @@ func run(ctx context.Context, args []string, stderr io.Writer, ready chan<- net.
 		ready <- lis.Addr()
 	}
 
-	go reloadOn(ctx, store, log, *interval)
+	go reloadOn(ctx, store, log, *interval, hup)
 
 	errc := make(chan error, 1)
 	go func() { errc <- srv.Serve(lis) }()
@@ -95,10 +102,7 @@ func run(ctx context.Context, args []string, stderr io.Writer, ready chan<- net.
 // reloadOn reloads the store on SIGHUP and, when interval is positive, on
 // a timer. A reload that fails is logged and the last good snapshot stays
 // in service: a broken edit must not take the gate down.
-func reloadOn(ctx context.Context, store *processor.Store, log *slog.Logger, interval time.Duration) {
-	hup := make(chan os.Signal, 1)
-	signal.Notify(hup, syscall.SIGHUP)
-	defer signal.Stop(hup)
+func reloadOn(ctx context.Context, store *processor.Store, log *slog.Logger, interval time.Duration, hup <-chan os.Signal) {
 	var tick <-chan time.Time
 	if interval > 0 {
 		t := time.NewTicker(interval)

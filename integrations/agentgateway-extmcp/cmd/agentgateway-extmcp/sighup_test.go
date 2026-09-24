@@ -46,8 +46,8 @@ func TestSIGHUPReloads(t *testing.T) {
 	c := extmcp.NewExtMcpClient(conn)
 
 	statement(t, dir, 10)
-	// The signal handler is installed by a goroutine after the listener
-	// opens; keep sending until the reload shows.
+	// The handler is installed before ready is sent, so the first signal
+	// cannot kill the process; the loop only waits for the reload to land.
 	deadline := time.Now().Add(5 * time.Second)
 	for {
 		if err := syscall.Kill(os.Getpid(), syscall.SIGHUP); err != nil {
