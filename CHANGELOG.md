@@ -15,6 +15,26 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+## [0.0.5] — 2026-09-24
+
+In lockstep with scout 0.0.5. Nothing in the `attestation` package, the
+schema or the processor changed; what changed is how the repository
+checks itself.
+
+### Fixed
+
+- **The coverage gate no longer dies on a package with no statements.**
+  `spec` only embeds a file, so `go test` reports "[no statements]", the
+  gate's search for a percentage found nothing, and the job ended there.
+  Such packages, and the example program, which `make example-check`
+  runs instead, are skipped rather than failed.
+- **Text files check out with LF on every platform.** The fixture and the
+  published schema are compared byte for byte by their tests, so a CRLF
+  checkout on Windows read both as stale.
+- **`scripts/lockstep.sh` and `scripts/family.sh` fetch to a file before
+  parsing.** A download piped into an interpreter is what OpenSSF
+  Scorecard reads as download-then-run, whatever the bytes are.
+
 ## [0.0.4] — 2026-09-23
 
 ### Added
@@ -60,5 +80,6 @@ module, this repository tags first.
   never disagree with. It moves when the scorer reads it as data.
 - **The report renderers**, until a consumer outside scout needs them.
 
-[Unreleased]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/sebastienrousseau/scout-reporting/releases/tag/v0.0.4

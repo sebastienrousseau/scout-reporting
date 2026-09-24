@@ -59,7 +59,7 @@
 ### As a Go library
 
 ```sh
-go get github.com/sebastienrousseau/scout-reporting@v0.0.4
+go get github.com/sebastienrousseau/scout-reporting@v0.0.5
 ```
 
 The module has no dependencies: adding it adds one line to `go.sum`.

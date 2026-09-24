@@ -3,7 +3,7 @@ module github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-ex
 go 1.26.8
 
 require (
-	github.com/sebastienrousseau/scout-reporting v0.0.4
+	github.com/sebastienrousseau/scout-reporting v0.0.5
 	google.golang.org/grpc v1.78.0
 	google.golang.org/protobuf v1.36.10
 )

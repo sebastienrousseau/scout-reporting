@@ -136,8 +136,9 @@ make generate   # regenerate gen/extmcp from proto/ext_mcp.proto
 ```
 
 The module is nested: it has its own `go.mod` so the root module stays
-free of dependencies. Until scout-reporting `v0.0.4` is tagged it uses
-a `replace` directive pointing at the enclosing repository; a consumer
-outside this tree should require `v0.0.4` instead. Lint uses the
+free of dependencies. It is built from a checkout, so a `replace`
+directive points it at the enclosing repository and the `require` names
+the release it tracks; a program outside this tree that embeds the
+verifier requires the tagged module instead. Lint uses the
 repository's `.golangci.yml`. Generated bindings are committed; see
 [`proto/README.md`](proto/README.md) for their provenance.
