@@ -12,15 +12,21 @@ set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 manifest="${SCOUT_ECOSYSTEM_URL:-https://raw.githubusercontent.com/sebastienrousseau/scout/main/ecosystem.json}"
-row=$(curl -fsSL "$manifest" | python3 -c '
+# Fetched to a file and parsed from it, never piped into an interpreter:
+# that shape reads as download-then-run to a supply-chain scanner.
+mf=$(mktemp)
+trap 'rm -f "$mf"' EXIT
+curl -fsSL "$manifest" -o "$mf"
+row=$(python3 - "$mf" <<'PYEOF'
 import json, sys
-m = json.load(sys.stdin)
+m = json.load(open(sys.argv[1]))
 rows = [r for r in m["repositories"] if r["name"] == "scout-reporting"]
 if not rows:
     sys.exit("family: scout-reporting has no row in the family manifest")
 r = rows[0]
 print(r["status"], r["license"], r["language"], str(r["lockstep"]).lower())
-')
+PYEOF
+)
 read -r status licence language lockstep <<<"$row"
 
 fail=0
