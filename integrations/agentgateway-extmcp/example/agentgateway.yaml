@@ -12,6 +12,11 @@
 # yaml-language-server: $schema=https://agentgateway.dev/schema/config
 mcp:
   port: 3000
+  # mcpGuardrails belongs here or on a route. agentgateway rejects it under
+  # an individual mcp.targets[] entry ("unknown field `mcpGuardrails`"):
+  # MCP policies apply to the whole target set. The processor tells targets
+  # apart through McpRequest.service_names, so per-target gating needs no
+  # per-target placement.
   policies:
     cors:
       allowOrigins: ["*"]
@@ -24,11 +29,14 @@ mcp:
           # failOpen would let unattested backends through while the
           # processor restarts, which defeats the point of gating.
           failureMode: failClosed
-          # Gate tool calls and listing; the processor answers Pass for
-          # anything else it is asked, but not asking is cheaper.
+          # Gate the methods that reach one backend. tools/list is left
+          # out on purpose: one listing spans every target, so gating it
+          # would hide the attested backends' tools behind a single
+          # unattested one. Calls to an unattested backend are still
+          # denied. The processor answers Pass for anything else it is
+          # asked, but not asking is cheaper.
           methods:
             tools/call: request
-            tools/list: request
             resources/read: request
             prompts/get: request
   targets:

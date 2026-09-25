@@ -105,12 +105,30 @@ mcp:
           failureMode: failClosed
           methods:
             tools/call: request
-            tools/list: request
+            resources/read: request
+            prompts/get: request
 ```
 
 `methods` is the gateway's allowlist; methods it does not match never
 reach the processor. `failClosed` is the setting that makes the gate a
 gate.
+
+- **Put `mcpGuardrails` under `mcp.policies` or a route, not on a
+  target.** agentgateway rejects it on an `mcp.targets[]` entry with
+  ``unknown field `mcpGuardrails` ``, because MCP policies apply to the
+  whole target set. Gating is still per backend: the gateway names the
+  backends a request touches in `service_names`, and the processor
+  decides for each.
+- **Leave `tools/list` out of `methods` unless every target is
+  attested.** One listing spans every target, so its `service_names`
+  carries all of them, and a single unattested backend denies the whole
+  listing. The agent then sees no tools at all, from attested backends
+  included. Calls to an unattested backend are denied either way.
+- **Check `denyFailIn` against what your servers actually fail.**
+  `protocol` covers checks such as `protocol.origin`, which a local
+  server that accepts any `Origin` fails. Such a server is denied under
+  the example policy even when its score clears `minScore`. That is the
+  intended reading of the policy, not a processor fault.
 
 ## Out of scope
 
