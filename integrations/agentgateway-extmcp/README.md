@@ -43,7 +43,12 @@ happens, not this code.
 
 ## Running it
 
+Install a release, or run it from a checkout of this directory:
+
 ```sh
+go install github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-extmcp/cmd/agentgateway-extmcp@v0.0.6
+agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
+
 go run ./cmd/agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
 ```
 
