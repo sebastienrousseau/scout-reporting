@@ -15,6 +15,20 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+## [0.0.6] — 2026-09-25
+
+In lockstep with scout 0.0.6. Nothing in the `attestation` package or
+the spec changed; the release is the agentgateway processor's.
+
+### Added
+
+- **The agentgateway processor installs with `go install`.** Its nested
+  module is tagged `integrations/agentgateway-extmcp/v0.0.6` alongside
+  this release, so
+  `go install github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-extmcp/cmd/agentgateway-extmcp@v0.0.6`
+  resolves without a checkout. Earlier releases tagged only the root
+  module.
+
 ### Fixed
 
 - **The agentgateway processor no longer logs after it has stopped.**
@@ -109,6 +123,7 @@ repository checks itself.
   never disagree with. It moves when the scorer reads it as data.
 - **The report renderers**, until a consumer outside scout needs them.
 
-[Unreleased]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/sebastienrousseau/scout-reporting/releases/tag/v0.0.4
