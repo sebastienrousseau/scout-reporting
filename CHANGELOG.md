@@ -15,6 +15,17 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+### Fixed
+
+- **The agentgateway processor installs with `go install`.** 0.0.6
+  tagged its nested module and documented the install, but the module's
+  `go.mod` carried a `replace` directive, which `go install` refuses, so
+  the documented command failed. The directive is gone: the module
+  requires scout-reporting v0.0.6, and a repository `go.work` keeps
+  builds from a checkout on the verifier at the same commit. CI and
+  `make integrations` build it the way `go install` does and refuse a
+  `replace`. Found by the v0.0.6 release audit.
+
 ## [0.0.6] — 2026-09-25
 
 In lockstep with scout 0.0.6. Nothing in the `attestation` package or
@@ -27,7 +38,9 @@ the spec changed; the release is the agentgateway processor's.
   this release, so
   `go install github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-extmcp/cmd/agentgateway-extmcp@v0.0.6`
   resolves without a checkout. Earlier releases tagged only the root
-  module.
+  module. *Correction:* the install fails at v0.0.6, because the
+  module's `go.mod` still carried a `replace` directive; it works from
+  0.0.7.
 
 ### Fixed
 

@@ -48,6 +48,9 @@ example-check:
 # gate with the same linter configuration.
 integrations:
 	cd integrations/agentgateway-extmcp && go vet ./... && go test ./... -cover && golangci-lint run --config ../../.golangci.yml ./...
+	# Installable as published: no replace, and a module-mode build succeeds.
+	! grep -q '^replace' integrations/agentgateway-extmcp/go.mod
+	cd integrations/agentgateway-extmcp && GOWORK=off go build ./...
 
 # This repository carries scout's version. See docs/ecosystem.md in scout.
 lockstep:

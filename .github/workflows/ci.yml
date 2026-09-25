@@ -204,6 +204,20 @@ jobs:
           go build ./...
           go vet ./...
           go test -race -shuffle=on -count=1 ./... -cover
+      - name: Installable as published
+        # go install refuses a module whose go.mod carries a replace
+        # directive, and it never sees go.work. Build the way it would:
+        # module mode, against the scout-reporting release go.mod requires.
+        env:
+          GOTOOLCHAIN: auto
+          GOWORK: "off"
+        run: |
+          set -euo pipefail
+          if grep -q '^replace' go.mod; then
+            echo "go.mod carries a replace directive; go install would refuse this module" >&2
+            exit 1
+          fi
+          go build ./...
       - name: golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         env:

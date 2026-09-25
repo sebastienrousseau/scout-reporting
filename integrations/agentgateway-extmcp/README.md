@@ -43,10 +43,11 @@ happens, not this code.
 
 ## Running it
 
-Install a release, or run it from a checkout of this directory:
+Install a release (v0.0.7 or later), or run it from a checkout of this
+directory:
 
 ```sh
-go install github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-extmcp/cmd/agentgateway-extmcp@v0.0.6
+go install github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-extmcp/cmd/agentgateway-extmcp@v0.0.7
 agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
 
 go run ./cmd/agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
@@ -159,9 +160,13 @@ make generate   # regenerate gen/extmcp from proto/ext_mcp.proto
 ```
 
 The module is nested: it has its own `go.mod` so the root module stays
-free of dependencies. It is built from a checkout, so a `replace`
-directive points it at the enclosing repository and the `require` names
-the release it tracks; a program outside this tree that embeds the
-verifier requires the tagged module instead. Lint uses the
+free of dependencies. Its `require` names the scout-reporting release it
+builds against when installed. Inside this checkout, the repository's
+`go.work` makes it build against the verifier at the same commit
+instead. A `replace` directive would do the same, but `go install`
+refuses any module that carries one, and `make integrations` and CI
+fail if one appears. A change to the verifier that the processor needs
+therefore ships in two releases: the verifier first, then the processor
+requiring it. Lint uses the
 repository's `.golangci.yml`. Generated bindings are committed; see
 [`proto/README.md`](proto/README.md) for their provenance.
