@@ -167,6 +167,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: API docs build complete, as pkgsite renders them
+        env:
+          GOTOOLCHAIN: auto
+        run: make apidoc
       - name: The published schema matches the types
         env:
           GOTOOLCHAIN: auto

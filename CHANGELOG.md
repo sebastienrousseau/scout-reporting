@@ -25,6 +25,10 @@ module, this repository tags first.
   and waits for the processor to listen in it. `-completion
   bash|zsh|fish` prints a completion script generated from the flag set,
   offering file names for `-config` and the four levels for `-log-level`.
+- **CI checks the public API is documented.** `scripts/apidoc` fails when
+  an exported identifier in `attestation` or `spec` has no doc comment,
+  since pkgsite renders those comments as the reference; it runs as
+  `make apidoc` and in CI.
 
 ### Changed
 

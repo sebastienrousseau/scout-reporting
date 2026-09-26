@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 .PHONY: all build test test-race coverage vet lint format spdx-check spec spec-verify readme-check \
-        example-check integrations lockstep family api-check help
+        example-check integrations lockstep family api-check apidoc help
 
 # Every gate CI runs, in the order the cheap ones fail first.
 all: format vet lint spdx-check spec-verify example-check test integrations
@@ -51,6 +51,11 @@ example-check:
 # The nested modules under integrations/ are programs built from this
 # checkout; ./... from the root does not see them, so they get their own
 # gate with the same linter configuration.
+# Every exported identifier in the public packages has a doc comment, since
+# pkgsite renders those comments as the API reference.
+apidoc:
+	go run ./scripts/apidoc ./attestation ./spec
+
 integrations:
 	cd integrations/agentgateway-extmcp && go vet ./... && go test ./... -cover && golangci-lint run --config ../../.golangci.yml ./...
 	# Installable as published: no replace, and a module-mode build succeeds.
