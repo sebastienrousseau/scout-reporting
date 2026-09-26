@@ -15,6 +15,16 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+### Changed
+
+- **A manual, an architecture page and a template README.** The docs
+  are built with MkDocs from scout's hash-locked requirements, strictly on
+  every pull request, and deployed to GitHub Pages from main.
+  `ARCHITECTURE.md` explains why the format is a separate Apache-2.0
+  module, what a statement is, how verification works and where the
+  agentgateway processor fits. The README follows the portfolio template,
+  which `scripts/readme-check.sh` now enforces in CI.
+
 ### Fixed
 
 - **The agentgateway processor installs with `go install`.** 0.0.6

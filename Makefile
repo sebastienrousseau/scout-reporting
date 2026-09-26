@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Sebastien Rousseau <sebastian.rousseau@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
-.PHONY: all build test test-race coverage vet lint format spdx-check spec spec-verify \
+.PHONY: all build test test-race coverage vet lint format spdx-check spec spec-verify readme-check \
         example-check integrations lockstep family api-check help
 
 # Every gate CI runs, in the order the cheap ones fail first.
@@ -29,6 +29,11 @@ lint:
 
 format:
 	gofmt -l -w .
+
+# The README follows the portfolio template: headings in order, no
+# unresolved {{VARIABLES}} (AGENTS.md §7.3).
+readme-check:
+	scripts/readme-check.sh
 
 spdx-check:
 	go run ./scripts/spdx_sweep.go

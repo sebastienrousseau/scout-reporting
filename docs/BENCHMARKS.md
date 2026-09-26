@@ -5,7 +5,7 @@
 
 What an admission decision costs: parsing a statement and validating it,
 subject digest included. There is one benchmark, `BenchmarkValidate` in
-[`attestation/attestation_test.go`](../attestation/attestation_test.go),
+[`attestation/attestation_test.go`](https://github.com/sebastienrousseau/scout-reporting/blob/main/attestation/attestation_test.go),
 run at two sizes — the two-verdict fixture, and a statement carrying the
 verdict of every check in a full scout run.
 
