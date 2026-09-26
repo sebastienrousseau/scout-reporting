@@ -15,6 +15,31 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+### Added
+
+- **The agentgateway processor ships as a container and completes in the
+  shell.** `integrations/agentgateway-extmcp/Dockerfile` builds it from its
+  directory alone, as `go install` sees the module, onto a distroless
+  nonroot base; both bases are pinned by digest, and the image listens on
+  all interfaces and reads `/etc/extmcp/config.json`. CI builds the image
+  and waits for the processor to listen in it. `-completion
+  bash|zsh|fish` prints a completion script generated from the flag set,
+  offering file names for `-config` and the four levels for `-log-level`.
+- **CI checks the public API is documented.** `scripts/apidoc` fails when
+  an exported identifier in `attestation` or `spec` has no doc comment,
+  since pkgsite renders those comments as the reference; it runs as
+  `make apidoc` and in CI.
+
+### Changed
+
+- **A manual, an architecture page and a template README.** The docs
+  are built with MkDocs from scout's hash-locked requirements, strictly on
+  every pull request, and deployed to GitHub Pages from main.
+  `ARCHITECTURE.md` explains why the format is a separate Apache-2.0
+  module, what a statement is, how verification works and where the
+  agentgateway processor fits. The README follows the portfolio template,
+  which `scripts/readme-check.sh` now enforces in CI.
+
 ### Fixed
 
 - **The agentgateway processor installs with `go install`.** 0.0.6

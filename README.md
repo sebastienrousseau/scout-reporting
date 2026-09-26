@@ -5,7 +5,7 @@
   <img src="https://raw.githubusercontent.com/sebastienrousseau/scout/main/.github/logo.svg" alt="scout-reporting logo" width="128" />
 </p>
 
-<h1 align="center"><a id="scout-reporting"></a>scout-reporting</h1>
+<h1 align="center">scout-reporting</h1>
 
 <p align="center">
   The attestation a scout run makes about a Model Context Protocol server, and the verifier that checks one offline — licensed so a gateway, registry or CI system can embed it.
@@ -30,9 +30,9 @@
 - [Requirements](#requirements) — the Go floor, and nothing else
 - [Quick Start](#quick-start) — verify a statement in twelve lines
 
-**The scout ecosystem**
+**The scout-reporting ecosystem**
 
-- [The scout ecosystem](#the-scout-ecosystem) — `scout`, `scout-reporting`, `scout-action`, `scout-mcp`, `scout-lsp`, `scout-census` at a glance
+- [The scout-reporting ecosystem](#the-scout-reporting-ecosystem) — `scout`, `scout-reporting`, `scout-action`, `scout-mcp`, `scout-lsp`, `scout-census` at a glance
 
 **Library reference**
 
@@ -129,7 +129,7 @@ it, and checking the signature, is the envelope's job — see
 
 ---
 
-## The scout ecosystem
+## The scout-reporting ecosystem
 
 One engine, three surfaces, five satellites. This repository is the
 licence boundary: the part of scout other people's software imports.
@@ -348,4 +348,4 @@ implemented and the verifier embedded without taking on the engine's
 licence — scout's [ADR 0011](https://github.com/sebastienrousseau/scout/blob/main/docs/adr/0011-attestation-format-is-apache.md)
 records why.
 
-<p align="right"><a href="#scout-reporting">Back to Top</a></p>
+<p align="right"><a href="#contents">Back to Top</a></p>

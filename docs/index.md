@@ -12,7 +12,7 @@ that checks it offline.
 | [verify.md](verify.md) | Verifying a statement: in Go, by schema, and the signature around it |
 | [BENCHMARKS.md](BENCHMARKS.md) | What an admission decision costs |
 | [adr/](adr/README.md) | Decision records for this repository |
-| [../spec/](../spec/README.md) | The published schema, and where the rubric is |
+| [../spec/](https://github.com/sebastienrousseau/scout-reporting/blob/main/spec/README.md) | The published schema, and where the rubric is |
 
 Producing a statement is scout's job; its manual is at
 <https://scoutmcp.io/manual/>. The API reference is at

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Sebastien Rousseau <sebastian.rousseau@gmail.com>
 # SPDX-License-Identifier: Apache-2.0
 
-.PHONY: all build test test-race vet lint generate generate-check help
+.PHONY: all build test test-race vet lint generate generate-check completions image help
 
 # The gates, cheapest first. This module has its own go.mod; run make here,
 # not from the repository root.
@@ -50,6 +50,21 @@ generate:
 # Fail if the committed bindings differ from what generate produces.
 generate-check: generate
 	git diff --exit-code -- gen/
+
+# Shell completions, generated from the flag set by the binary itself, into
+# build/completions. bash is syntax-checked here; zsh and fish when present.
+completions:
+	mkdir -p build/completions
+	go run ./cmd/agentgateway-extmcp -completion bash > build/completions/agentgateway-extmcp.bash
+	go run ./cmd/agentgateway-extmcp -completion zsh > build/completions/_agentgateway-extmcp
+	go run ./cmd/agentgateway-extmcp -completion fish > build/completions/agentgateway-extmcp.fish
+	bash -n build/completions/agentgateway-extmcp.bash
+	if command -v zsh >/dev/null; then zsh -n build/completions/_agentgateway-extmcp; fi
+	if command -v fish >/dev/null; then fish -n build/completions/agentgateway-extmcp.fish; fi
+
+# The container image, built from this directory alone as go install sees it.
+image:
+	docker build --tag agentgateway-extmcp:dev .
 
 help:
 	@grep -E '^[a-z-]+:' $(MAKEFILE_LIST) | cut -d: -f1 | sort -u

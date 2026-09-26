@@ -77,7 +77,7 @@ the verdicts and get the same number, which is what makes it a claim.
 
 ## The schema
 
-[`spec/attestation/mcp-evaluation-v1.schema.json`](../spec/attestation/mcp-evaluation-v1.schema.json)
+[`spec/attestation/mcp-evaluation-v1.schema.json`](https://github.com/sebastienrousseau/scout-reporting/blob/main/spec/attestation/mcp-evaluation-v1.schema.json)
 is JSON Schema 2020-12 for the whole statement, generated from the Go
 types by reflection, with the constants and enumerations fixed. A consumer
 with its own schema validator uses it directly; the `spec` package embeds
