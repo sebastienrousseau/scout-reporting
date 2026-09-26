@@ -31,6 +31,10 @@ import (
 	"github.com/sebastienrousseau/scout-reporting/integrations/agentgateway-extmcp/processor"
 )
 
+// stdout receives what the command prints on purpose: today, only a
+// completion script. Diagnostics go to stderr.
+var stdout io.Writer = os.Stdout
+
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -51,8 +55,12 @@ func run(ctx context.Context, args []string, stderr io.Writer, ready chan<- net.
 	maxBytes := fs.Int64("max-bytes", processor.DefaultMaxBytes, "largest attestation accepted, in bytes")
 	timeout := fs.Duration("fetch-timeout", processor.DefaultTimeout, "time allowed for one https fetch")
 	level := fs.String("log-level", "info", "debug, info, warn or error")
+	completion := fs.String("completion", "", "print a completion script for bash, zsh or fish, and exit")
 	if err := fs.Parse(args); err != nil {
 		return err
+	}
+	if *completion != "" {
+		return writeCompletion(stdout, fs, *completion)
 	}
 	if *configPath == "" {
 		return errors.New("-config is required")

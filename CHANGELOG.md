@@ -15,6 +15,17 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+### Added
+
+- **The agentgateway processor ships as a container and completes in the
+  shell.** `integrations/agentgateway-extmcp/Dockerfile` builds it from its
+  directory alone, as `go install` sees the module, onto a distroless
+  nonroot base; both bases are pinned by digest, and the image listens on
+  all interfaces and reads `/etc/extmcp/config.json`. CI builds the image
+  and waits for the processor to listen in it. `-completion
+  bash|zsh|fish` prints a completion script generated from the flag set,
+  offering file names for `-config` and the four levels for `-log-level`.
+
 ### Changed
 
 - **A manual, an architecture page and a template README.** The docs

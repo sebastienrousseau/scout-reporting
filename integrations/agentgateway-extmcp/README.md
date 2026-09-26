@@ -53,10 +53,27 @@ agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
 go run ./cmd/agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
 ```
 
+Or as a container, built from this directory. It listens on all
+interfaces inside the container and reads its configuration from
+`/etc/extmcp/config.json`:
+
+```sh
+docker build -t agentgateway-extmcp .
+docker run --rm -p 4400:4400 -v "$PWD/example:/etc/extmcp:ro" agentgateway-extmcp
+```
+
+Shell completions come from the flag set:
+
+```sh
+agentgateway-extmcp -completion bash > /etc/bash_completion.d/agentgateway-extmcp
+agentgateway-extmcp -completion zsh > "${fpath[1]}/_agentgateway-extmcp"
+agentgateway-extmcp -completion fish > ~/.config/fish/completions/agentgateway-extmcp.fish
+```
+
 Flags: `-config` (required), `-listen` (default `127.0.0.1:4400`; use
 `0.0.0.0:…` in a container), `-reload-interval` (default off),
 `-max-bytes` (default 1 MiB per statement), `-fetch-timeout` (default
-10s), `-log-level`. Diagnostics are JSON lines on stderr.
+10s), `-log-level`, and `-completion` (print a shell completion script). Diagnostics are JSON lines on stderr.
 
 Statements are read once at startup. `SIGHUP` re-reads the configuration
 and every statement; `-reload-interval` does the same on a timer. A

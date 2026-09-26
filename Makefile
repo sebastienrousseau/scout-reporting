@@ -56,6 +56,8 @@ integrations:
 	# Installable as published: no replace, and a module-mode build succeeds.
 	! grep -q '^replace' integrations/agentgateway-extmcp/go.mod
 	cd integrations/agentgateway-extmcp && GOWORK=off go build ./...
+	# Shell completions generate from the flag set and parse.
+	$(MAKE) -C integrations/agentgateway-extmcp completions
 
 # This repository carries scout's version. See docs/ecosystem.md in scout.
 lockstep:

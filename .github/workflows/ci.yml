@@ -218,6 +218,24 @@ jobs:
             exit 1
           fi
           go build ./...
+      - name: Shell completions generate and parse
+        env:
+          GOTOOLCHAIN: auto
+        run: make completions
+      - name: Container image builds, and the processor listens in it
+        run: |
+          set -euo pipefail
+          docker build --quiet --tag agentgateway-extmcp:ci .
+          docker run --detach --name extmcp --volume "$PWD/example:/etc/extmcp:ro" agentgateway-extmcp:ci >/dev/null
+          trap 'docker rm --force extmcp >/dev/null' EXIT
+          for _ in $(seq 20); do
+            logs=$(docker logs extmcp 2>&1)
+            if grep -q '"msg":"listening"' <<<"${logs}"; then echo "listening"; exit 0; fi
+            sleep 1
+          done
+          echo "the processor did not start listening in its container:" >&2
+          echo "${logs}" >&2
+          exit 1
       - name: golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         env:
