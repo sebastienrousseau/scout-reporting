@@ -53,13 +53,17 @@ agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
 go run ./cmd/agentgateway-extmcp -config example/config.json -listen 127.0.0.1:4400
 ```
 
-Or as a container, built from this directory. It listens on all
-interfaces inside the container and reads its configuration from
-`/etc/extmcp/config.json`:
+Or as a container. Releases from 0.0.7 publish a multi-arch image with
+SLSA build provenance, and this directory builds the same image. It
+listens on all interfaces inside the container and reads its
+configuration from `/etc/extmcp/config.json`:
 
 ```sh
-docker build -t agentgateway-extmcp .
-docker run --rm -p 4400:4400 -v "$PWD/example:/etc/extmcp:ro" agentgateway-extmcp
+docker run --rm -p 4400:4400 -v "$PWD/example:/etc/extmcp:ro" \
+  ghcr.io/sebastienrousseau/agentgateway-extmcp:0.0.7
+gh attestation verify oci://ghcr.io/sebastienrousseau/agentgateway-extmcp:0.0.7 --owner sebastienrousseau
+
+docker build -t agentgateway-extmcp .   # or build it from this directory
 ```
 
 Shell completions come from the flag set:

@@ -15,8 +15,20 @@ module, this repository tags first.
 
 ## [Unreleased]
 
+## [0.0.7] — 2026-09-26
+
+In lockstep with scout 0.0.7. The `attestation` package and the schema are
+unchanged; the release is the agentgateway processor's packaging and the
+repository's documentation.
+
 ### Added
 
+- **Releases publish the processor's container image.** Each release
+  pushes `ghcr.io/sebastienrousseau/agentgateway-extmcp:<version>` for
+  linux/amd64 and linux/arm64, built from the processor's directory as
+  `go install` sees it, with SLSA build provenance attached to the digest
+  (`gh attestation verify oci://…`). The release check keeps the README's
+  image tag on the release.
 - **The agentgateway processor ships as a container and completes in the
   shell.** `integrations/agentgateway-extmcp/Dockerfile` builds it from its
   directory alone, as `go install` sees the module, onto a distroless
@@ -161,7 +173,8 @@ repository checks itself.
   never disagree with. It moves when the scorer reads it as data.
 - **The report renderers**, until a consumer outside scout needs them.
 
-[Unreleased]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.6...HEAD
+[Unreleased]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/sebastienrousseau/scout-reporting/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/sebastienrousseau/scout-reporting/releases/tag/v0.0.4
