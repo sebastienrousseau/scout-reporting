@@ -21,4 +21,7 @@ if grep -Eo 'agentgateway-extmcp@v[0-9]+\.[0-9]+\.[0-9]+' "$proc" | grep -v "age
   echo "$proc pins a version other than $ver" >&2; exit 1
 fi
 grep -q "agentgateway-extmcp@v$ver" "$proc" || { echo "$proc has no install snippet for v$ver" >&2; exit 1; }
+if grep -Eo 'agentgateway-extmcp:[0-9]+\.[0-9]+\.[0-9]+' "$proc" | grep -v "agentgateway-extmcp:$ver"; then
+  echo "$proc names an image version other than $ver" >&2; exit 1
+fi
 echo "release versions agree on $ver"

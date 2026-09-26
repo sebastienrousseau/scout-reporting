@@ -17,6 +17,12 @@ module, this repository tags first.
 
 ### Added
 
+- **Releases publish the processor's container image.** Each release
+  pushes `ghcr.io/sebastienrousseau/agentgateway-extmcp:<version>` for
+  linux/amd64 and linux/arm64, built from the processor's directory as
+  `go install` sees it, with SLSA build provenance attached to the digest
+  (`gh attestation verify oci://…`). The release check keeps the README's
+  image tag on the release.
 - **The agentgateway processor ships as a container and completes in the
   shell.** `integrations/agentgateway-extmcp/Dockerfile` builds it from its
   directory alone, as `go install` sees the module, onto a distroless
